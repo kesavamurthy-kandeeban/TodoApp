@@ -1,1 +1,2 @@
 export const UPDATE_TODOS = 'UPDATE_TODOS';
+export const UPDATE_MOVIES = 'UPDATE_MOVIES';

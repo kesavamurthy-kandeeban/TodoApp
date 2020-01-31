@@ -1,7 +1,6 @@
 import { UPDATE_TODOS } from '../action-type/action-types'
 const initialState = {
   todos: [],
-  name: 'ragavi',
 }
 function reducer(state = initialState, action) {
 

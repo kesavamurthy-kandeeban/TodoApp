@@ -1,6 +1,6 @@
 import React from 'react'
 import './TodoList.css'
-import PropTypes from 'prop-types';
+import {PropTypes} from 'prop-types';
 import { Button } from 'antd';
 
 function TodoList(props) {
@@ -20,7 +20,7 @@ function TodoList(props) {
 const showList = (props) => {
   // eslint-disable-next-line
 
-  return props.todoStore.todos.map(data => {
+  return props.todoStore.Todo.todos.map(data => {
     return (
       <tr key={data.id}>
         <td>{data.value}</td>

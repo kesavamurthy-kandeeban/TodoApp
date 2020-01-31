@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 
 
 import TodoList from '../components/TodoList'
+import Header from '../components/Header'
 import 'antd/dist/antd.css';
 
 import { updateTodos } from '../actions/actions';
 
-import { Radio, Button, Form, Input } from 'antd'
+import { Select, Button, Form, Input } from 'antd'
 import { REPORT_TO_1, REPORT_TO_2 } from '../constants/constants'
-const RadioGroup = Radio.Group;
+const { Option } = Select;
 
 class TodoInput extends React.Component {
   constructor(props) {
@@ -30,8 +31,7 @@ class TodoInput extends React.Component {
     this.id = 0;
   }
   removeTodo = (todoId) => {
-    const { todos } = this.props;
-    this.props.updateTodos(todos.todos.filter(todo => todo.id !== todoId))
+    this.props.updateTodos(this.props.todos.Todo.todos.filter(todo => todo.id !== todoId))
   }
 
   editTodo = (todo) => {
@@ -77,7 +77,7 @@ class TodoInput extends React.Component {
   handleSumbit = event => {
     event.preventDefault();
     const { todos } = this.props;
-    let list = todos.todos;
+    let list = todos.Todo.todos;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log(values)
@@ -97,11 +97,11 @@ class TodoInput extends React.Component {
     });
   }
   showForm = () => {
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-    const todoerror = isFieldTouched('todoInput') && getFieldError('todoInput');
-    console.log(this.state)
+    const { getFieldDecorator, getFieldsError, getFieldError } = this.props.form;
+    const todoerror = getFieldError('todoInput');
+    const reporterror = getFieldError('todoInput');
     return (
-      <div>
+      <div >
         <Form onSubmit={this.handleSumbit}>
           <Form.Item
             validateStatus={todoerror ? 'error' : ''} help={todoerror || ''}
@@ -113,20 +113,22 @@ class TodoInput extends React.Component {
               placeholder="Todo.."
             />)}
           </Form.Item>
-          <br></br>
+          {/* <br></br> */}
           <Form.Item
             label="Report To"
+            validateStatus={reporterror ? 'error' : ''} help={reporterror || ''}
           >
-            {getFieldDecorator('reportTo',{
+            {getFieldDecorator('reportTo', {
+              rules: [{ required: true, message: 'Select the person you want to report', whitespace: true }],
             })(
-              <RadioGroup value={this.state.choice}>
-                <Radio value={REPORT_TO_1}>{REPORT_TO_1}</Radio>
-                <Radio value={REPORT_TO_2}>{REPORT_TO_2}</Radio>
-              </RadioGroup>
+              <Select placeholder="Assign roles for this user" size="defualt" style={{ width: 300 }}>
+                <Option value={REPORT_TO_1}>{REPORT_TO_1}</Option>
+                <Option value={REPORT_TO_2}>{REPORT_TO_2}</Option>
+              </Select>
             )}
           </Form.Item>
 
-          <br></br>
+          {/* <br></br> */}
           <Button
             disabled={hasErrors(getFieldsError())}
             htmlType="submit">Save</Button>
@@ -145,10 +147,11 @@ class TodoInput extends React.Component {
         <br></br>
       </div>);
   }
-  render() {
 
+  render() {
     return (
       <div className="Align-center">
+        <Header currentPage={'Todo'}/>
         <Button onClick={() => { this.setState({ viewForm: true }) }}> Add </Button>
         {(this.state.viewForm) ? this.showForm() : ""}
         <TodoList
@@ -177,7 +180,9 @@ function hasErrors(fieldsError) {
 const TodoForm = Form.create({ name: 'todo_form' })(TodoInput);
 
 
-
+TodoInput.propTypes = {
+  todos: PropTypes.array.isRequired,
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
