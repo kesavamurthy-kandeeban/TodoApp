@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from 'antd'
 import 'antd/dist/antd.css';
 
+import moment from 'moment'
 import './TodoList.css';
 function showList(props) {
   return (
@@ -10,7 +11,7 @@ function showList(props) {
       return (
         <tr key={data.id}>
           <td>{data.movieName}</td>
-          <td>{data.releaseDate}</td>
+          <td>{moment(data.releaseDate).format('DD/MM/YYYY')}</td>
           <td> <Button
             onClick={() => {
               props.viewMovie(data)
@@ -21,14 +22,19 @@ function showList(props) {
           </td>
           <td>
             <Button
-              onClick={props.removeMovie(data)}
+              onClick={() => {
+                props.editMovie(data)
+              }}
               size="default">
               Edit
             </Button>
           </td>
           <td>
             <Button
-              onClick={props.editMovie(data)}
+              onClick={() => {
+                props.removeMovie(data)
+              }
+              }
               size="default">
               Remove
             </Button>

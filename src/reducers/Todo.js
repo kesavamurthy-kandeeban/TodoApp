@@ -1,16 +1,22 @@
-import { UPDATE_TODOS } from '../action-type/action-types'
+import { INSERT_TODOS, EDIT_TODO } from '../action-type/action-types';
+
 const initialState = {
-  todos: [],
-}
-function reducer(state = initialState, action) {
+  
+};
+
+const reducer = (state = initialState, action) => {
 
   switch (action.type) {
-    case UPDATE_TODOS:
+  case INSERT_TODOS:
       return Object.assign({}, state, {
-        // todos: state.todos.concat(action.payload)
-        todos: action.payload,
-      });
-    default: return state;
+        todoList: action.payload,
+      }); 
+  case EDIT_TODO:
+      return Object.assign({}, state, {
+        editTodo: action.todo,
+      });        
+  default: 
+  return state;
   }
 }
 export default reducer;

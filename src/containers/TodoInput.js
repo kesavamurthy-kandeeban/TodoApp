@@ -2,188 +2,120 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import TodoList from '../components/TodoList';
+import Header from '../components/Header';
+import TodoForm from '../components/TodoFormDrawer'
 
-import TodoList from '../components/TodoList'
-import Header from '../components/Header'
+import { Select, Button } from 'antd';
 import 'antd/dist/antd.css';
 
-import { updateTodos } from '../actions/actions';
+import { updateTodos, insertTodos, getTodos, editTodos, deleteTodos, editTodo } from '../actions/actions';
+import { buttonName, actionTypes } from '../config/config';
 
-import { Select, Button, Form, Input } from 'antd'
-import { REPORT_TO_1, REPORT_TO_2 } from '../constants/constants'
-const { Option } = Select;
+import _ from 'lodash';
+
 
 class TodoInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewForm: false,
+      visible: false,
+      typeOfAction: '',
     };
 
-    //Subscription task
-    this.update = { id: 0, status: false };
-    this.saveEdits = this.saveEdits.bind(this);
-    this.showForm = this.showForm.bind(this);
-    this.save = this.save.bind(this);
-    this.handleSumbit = this.handleSumbit.bind(this);
-    this.removeTodo = this.removeTodo.bind(this);
-    this.editTodo = this.editTodo.bind(this);
-    this.id = 0;
-  }
-  removeTodo = (todoId) => {
-    this.props.updateTodos(this.props.todos.Todo.todos.filter(todo => todo.id !== todoId))
   }
 
-  editTodo = (todo) => {
-    const todoInput = 'todoInput';
-    const reportTo = 'reportTo';
+  onClose = () => {
+    this.setState({
+      visible: false,
+    });
+  };
 
-    setTimeout(() => {
-      this.props.form.setFieldsValue({
-        [todoInput]: todo.value,
-        [reportTo]: todo.reportTo
-      });
-    }, 0)
-    this.setState({ viewForm: true });
-    this.update = ({
-      id: todo.id,
-      status: true,
+  removeTodo = todoId => {
+    this.props.deleteTodos(todoId);
+  }
+
+  editTodo = () => {
+    this.setState({
+      visible: true,
+      typeOfAction: actionTypes.edit
     })
   }
-  saveEdits = (list, values) => {
-    list.map(data => {
-      if (data.id === this.update.id) {
-        data.value = values.todoInput;
-        data.reportTo = values.reportTo;
-      }
-    })
-    this.props.updateTodos(list)
-    this.update = { id: 0, status: false }
-  }
-  save = (list, values) => {
-    let newItem = {
-      id: ++this.id,
-      value: values.todoInput,
-      date: new Date().toLocaleDateString(),
-      reportTo: values.reportTo,
-    }
-    let todos = list
-    todos.push(newItem)
-    this.props.updateTodos(todos)
-  }
-  componentDidMount() {
-    this.props.form.validateFields();
-  }
-  handleSumbit = event => {
-    event.preventDefault();
-    const { todos } = this.props;
-    let list = todos.Todo.todos;
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log(values)
-        if (this.update.status) {
-          this.setState({
-            viewForm: false
-          })
-          this.saveEdits(list, values);
-        }
-        else {
-          this.save(list, values)
-          this.setState({
-            viewForm: false
-          })
-        }
-      }
+
+  saveEdits = (todo) => {
+    const todoStore = _.get(this.props.todoStore, 'Todo.editTodo', {});
+    todoStore.taskName = todo.todoInput;
+    todoStore.reportTo = todo.reportTo;
+    todoStore.todoDate = todo.todoDate;
+    this.props.editTodos(todoStore);
+    this.setState({
+      typeOfAction:''
     });
   }
-  showForm = () => {
-    const { getFieldDecorator, getFieldsError, getFieldError } = this.props.form;
-    const todoerror = getFieldError('todoInput');
-    const reporterror = getFieldError('todoInput');
-    return (
-      <div >
-        <Form onSubmit={this.handleSumbit}>
-          <Form.Item
-            validateStatus={todoerror ? 'error' : ''} help={todoerror || ''}
-          >
-            {getFieldDecorator('todoInput', {
-              rules: [{ required: true, message: 'Please enter the task!', whitespace: true }],
-            })(<Input
-              id="todoInput"
-              placeholder="Todo.."
-            />)}
-          </Form.Item>
-          {/* <br></br> */}
-          <Form.Item
-            label="Report To"
-            validateStatus={reporterror ? 'error' : ''} help={reporterror || ''}
-          >
-            {getFieldDecorator('reportTo', {
-              rules: [{ required: true, message: 'Select the person you want to report', whitespace: true }],
-            })(
-              <Select placeholder="Assign roles for this user" size="defualt" style={{ width: 300 }}>
-                <Option value={REPORT_TO_1}>{REPORT_TO_1}</Option>
-                <Option value={REPORT_TO_2}>{REPORT_TO_2}</Option>
-              </Select>
-            )}
-          </Form.Item>
 
-          {/* <br></br> */}
-          <Button
-            disabled={hasErrors(getFieldsError())}
-            htmlType="submit">Save</Button>
-          <Button
-            htmlType="submit"
-            onClick={() => this.setState({ viewForm: false })}
-          >Cancel</Button>
-          <Button
-            onClick={() => {
-              this.props.updateTodos([]);
-              this.setState({ viewForm: false })
-            }
-            }
-          >Clear Store</Button>
-        </Form>
-        <br></br>
-      </div>);
+  save = todo => {
+    let newItem = {
+      value: todo.todoInput,
+      date: todo.todoDate,
+      reportTo: todo.reportTo,
+    };
+    this.props.insertTodos(newItem);
+  }
+
+  handleSumbit = todo => {
+    if (this.state.typeOfAction === actionTypes.edit) {
+      this.saveEdits(todo);
+    }
+    else {
+      this.save(todo);
+    }
+    this.setState({
+      visible: false,
+    });
   }
 
   render() {
     return (
       <div className="Align-center">
-        <Header currentPage={'Todo'}/>
-        <Button onClick={() => { this.setState({ viewForm: true }) }}> Add </Button>
-        {(this.state.viewForm) ? this.showForm() : ""}
-        <TodoList
-          removeTodo={this.removeTodo}
-          updateTodo={this.editTodo}
-          todoStore={this.props.todos}
+        <Header currentPage={'Todo'} />
+        <Button onClick={() => {   
+          this.setState({ visible: true });
+        }}> {buttonName.add} </Button>
+        <Button>{buttonName.clearStore}</Button>
+        <TodoForm
+          handleSumbit={this.handleSumbit}
+          onShowDrawer={this.state.visible}
+          typeOfAction={this.state.typeOfAction} 
+          onCloseDrawer={this.onClose}
         />
-      </div>)
+        <TodoList
+          editTodos={this.editTodo}
+          removeTodo={this.removeTodo}
+        />
+      </div>);
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateTodos: todos => dispatch(updateTodos(todos))
+    updateTodos: todos => dispatch(updateTodos(todos)),
+    insertTodos: todos => dispatch(insertTodos(todos)),
+    getTodos: () => dispatch(getTodos()),
+    editTodos: payload => dispatch(editTodos(payload)),
+    deleteTodos: payload => dispatch(deleteTodos(payload)),
   };
 }
 
 const mapStateToProps = state => {
-  return { todos: state };
+  return { todoStore: state };
 };
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
-
-const TodoForm = Form.create({ name: 'todo_form' })(TodoInput);
-
 
 TodoInput.propTypes = {
   todos: PropTypes.array.isRequired,
 }
+
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(TodoForm);
+)(TodoInput);

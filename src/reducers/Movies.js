@@ -1,13 +1,16 @@
-import { UPDATE_MOVIES } from '../action-type/action-types'
+import { UPDATE_MOVIES } from '../action-type/action-types';
+
 const InitialState = {
   list:[],
-}
-function  Movies(state= InitialState, action) {
-  switch(action.type){
-    case UPDATE_MOVIES: return Object.assign({},state,{
+};
+
+  const Movies = (state= InitialState, action) => {
+  switch ( action.type ) {
+  case UPDATE_MOVIES: return Object.assign({},state,{
       list: action.payload,
     });
-    default: return  state;
+    default: 
+    return  state;
   }
 }
 export default Movies;

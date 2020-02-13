@@ -9,6 +9,10 @@ td {
   color: #474040;
   font-family: "Bebas Neue", cursive;
 }
+.alignContent {
+  display:flex;
+  justify-content: center;
+}
 tr:nth-child(even) {
   background-color: #d1c9c9;
 }
