@@ -1,11 +1,18 @@
 th,
 td {
   padding: 15px;
-  align-content: center;
 }
-div {
-  padding-top: 5px;
+.textColor {
+  color: #474040;
+}
+.textstyle {
+  color: #474040;
+  font-family: "Bebas Neue", cursive;
+}
+.alignContent {
+  display:flex;
+  justify-content: center;
 }
 tr:nth-child(even) {
-  background-color: #e2dddd;
+  background-color: #d1c9c9;
 }
