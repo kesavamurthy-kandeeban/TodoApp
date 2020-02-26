@@ -1,5 +1,5 @@
 //react-library
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button } from 'antd';
 
 //antd
@@ -47,7 +47,6 @@ function MovieListComponent() {
   const [isShowForm, setShowform] = useState();
   const [selectedHeroId, setHeroId] = useState();
   const [selectedCategoryId, setCategoryId] = useState();
-  const [resetField, setResetField] = useState();
 
   return (
     <>
@@ -64,8 +63,8 @@ function MovieListComponent() {
           style={{ width: 300 }}
           getPopupContainer={popContainer}
           onChange={(heroId) => (
-            setHeroId(heroId),
-            setResetField(null))}
+            setHeroId(heroId))}
+          allowClear={true}
           placeholder="Select Hero name to see the movie list"
         >
           {_.map(heroList, (heros) => <Option key={heros.heroId} > {heros.heroName} </Option>)}
@@ -73,31 +72,29 @@ function MovieListComponent() {
         <div style={{ paddingTop: '30px' }}>
           <Select
             style={{ width: 300 }}
-            value={resetField}
             getPopupContainer={popContainer}
-            onChange={(event) => setResetField(event)}
+            allowClear={true}
           >
             {_.map(_.filter(movieList, _.matches({ 'heroId': selectedHeroId })), (movies) => <Option key={movies.movieId}>{movies.movieName}</Option>)}
           </Select>
 
         </div>
         <div style={{ paddingTop: '30px' }}>
-        <Select
-          style={{ width: 300 }}
-          onChange={(categoryId) => (
-            setCategoryId(categoryId),
-            setResetField(null))}
-          placeholder="Select movie category"
-          getPopupContainer={popContainer}
-        >
-          {_.map(category, (categories) => <Option key={categories.categoryId} > {categories.categoryName} </Option>)}
-        </Select>
+          <Select
+            style={{ width: 300 }}
+            onChange={(categoryId) => (
+              setCategoryId(categoryId))}
+            allowClear={true}
+            placeholder="Select movie category"
+            getPopupContainer={popContainer}
+          >
+            {_.map(category, (categories) => <Option key={categories.categoryId} > {categories.categoryName} </Option>)}
+          </Select>
         </div>
         <div style={{ paddingTop: '30px' }}>
           <Select
             style={{ width: 300 }}
-            value={resetField}
-            onChange={(event) => setResetField(event)}
+            allowClear={true}llll
             getPopupContainer={popContainer}
           >
             {_.map(_.filter(subCategory, _.matches({ 'categoryId': selectedCategoryId })), (subCategories) => <Option key={subCategories.subCategoryId}>{subCategories.subCategoryName}</Option>)}
