@@ -6,6 +6,7 @@ import { Button } from 'antd';
 
 import TodoInput from './containers/TodoInput';
 import Movies from './containers/Movies';
+import MovieListComponent from './components/MovieListComponent';
 
 class App extends React.Component {
   constructor() {
@@ -19,6 +20,7 @@ class App extends React.Component {
     return (
       <div><Link to='/todo'><Button type="primary">Todo</Button></Link>
         <Link to='/movies'><Button >Movies</Button></Link>
+        <Link to='/movieList'><Button>Movie List</Button></Link>
       </div>);
   }
   render() {
@@ -30,6 +32,7 @@ class App extends React.Component {
           <Switch>
             <Route path='/todo' component={ TodoInput } />
             <Route path='/movies' component={ Movies } />
+            <Route path='/movieList' component={ MovieListComponent }/>
           </Switch>
         </BrowserRouter>
       </div>);

@@ -46,11 +46,6 @@ class TodoFromDrawer extends React.Component {
   }
 
   onClose = () => {
-    this.props.form.setFieldsValue({
-      [fieldId.todoInput]: null,
-      [fieldId.todoDate]: null,
-      [fieldId.reportTo]: null,
-    });
     this.props.editTodo({});
     this.props.onCloseDrawer();
   };
@@ -59,6 +54,7 @@ class TodoFromDrawer extends React.Component {
     event.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        console.log(values);
         this.props.handleSumbit(values);
         this.props.form.setFieldsValue({
           [fieldId.todoInput]: null,
@@ -89,6 +85,7 @@ class TodoFromDrawer extends React.Component {
         placement="right"
         width="500px"
         closable={true}
+        destroyOnClose={true}
         onClose={this.onClose}
         visible={this.props.onShowDrawer}
       >

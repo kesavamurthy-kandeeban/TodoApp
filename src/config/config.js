@@ -31,3 +31,7 @@ export const fieldId = {
   reportTo: 'reportTo',
   todoDate:'todoDate',
 };
+
+export const reponseMessage = {
+  apiSuccess:'Todo has retrived sucessfully',
+}

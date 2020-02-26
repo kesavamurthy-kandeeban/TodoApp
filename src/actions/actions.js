@@ -28,53 +28,43 @@ export const editTodo = (todo) => {
   return { type:EDIT_TODO, todo }
 }
 
-export const insertTodos = (payload) => {
-  return async(dispatch) => {
-    return (
-      await api.post(`${apiRoute}`, payload, apiConfig)
-      .then(res => {
-        message.success(res.data.message)
-        dispatch(updateTodos(res.data.list))
-      })
-      .catch(err => { console.log(err) }));
-  }
+/** Fat arrow function to handle multiple returns */
+export const insertTodos = (payload) => async(dispatch) => {
+  
+  console.log((api.get(`${apiRoute}`, apiConfig)).data)
+  
+  const response = await api.post(`${apiRoute}`, payload, apiConfig);
+  dispatch(updateTodos(response.data.list));
+  message.success(response.data.message);
+  return response.data.message
 }
 
+/** This is a bad practice. Await should not be follwed with .then.*/ 
 export const getTodos = () => {
   return async(dispatch) => {
     return (
         await api.get(`${apiRoute}`, apiConfig)
-        .then(res => {
-          console.log(res)
-          dispatch(updateTodos(res.data.list))
+        .then(response => {
+          dispatch(updateTodos(response.data.list))
+          return response.data.message
         })
         .catch(err => { 
           console.log(err) }));
   }
 }
 
+/* This is also a good practice*/
 export const editTodos = payload => {
   return async(dispatch) => {
-    return (
-      await api.put(`${apiRoute}/${payload._id}`, payload, apiConfig)
-      .then(res => {
-        message.success(res.data.message)
-        dispatch(updateTodos(res.data.list))
-      })
-      .catch(err => {
-        console.log(err) }));
+    const response = await api.put(`${apiRoute}/${payload._id}`, payload, apiConfig);
+    message.success(response.data.message)
+    return (dispatch(updateTodos(response.data.list)));
   }
 }
 
-export const deleteTodos = id => {
-  return async(dispatch) => {
-    return (
-        await api.delete(`${apiRoute}/${id}`)
-        .then(res => {
-          message.success(res.data.message)
-          dispatch(updateTodos(res.data.list))
-        })
-        .catch(err => {
-          console.log(err) }));
-  }
+export const deleteTodos = (id) => async(dispatch) => {
+  const response = await api.delete(`${apiRoute}/${id}`);
+  dispatch(updateTodos(response.data.list));
+  message.success(response.data.message);
+  return response.data.message;
 }

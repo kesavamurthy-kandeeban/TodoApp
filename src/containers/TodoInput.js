@@ -6,7 +6,7 @@ import TodoList from '../components/TodoList';
 import Header from '../components/Header';
 import TodoForm from '../components/TodoFormDrawer'
 
-import { Select, Button } from 'antd';
+import { Button } from 'antd';
 import 'antd/dist/antd.css';
 
 import { updateTodos, insertTodos, getTodos, editTodos, deleteTodos, editTodo } from '../actions/actions';
@@ -21,9 +21,9 @@ class TodoInput extends React.Component {
     this.state = {
       visible: false,
       typeOfAction: '',
-    };
-
+    }
   }
+
 
   onClose = () => {
     this.setState({
@@ -81,7 +81,6 @@ class TodoInput extends React.Component {
         <Button onClick={() => {   
           this.setState({ visible: true });
         }}> {buttonName.add} </Button>
-        <Button>{buttonName.clearStore}</Button>
         <TodoForm
           handleSumbit={this.handleSumbit}
           onShowDrawer={this.state.visible}
@@ -96,24 +95,20 @@ class TodoInput extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTodos: todos => dispatch(updateTodos(todos)),
-    insertTodos: todos => dispatch(insertTodos(todos)),
-    getTodos: () => dispatch(getTodos()),
-    editTodos: payload => dispatch(editTodos(payload)),
-    deleteTodos: payload => dispatch(deleteTodos(payload)),
-  };
-}
+const mapDispatchToProps = (dispatch) => ({
+  updateTodos: todos => dispatch(updateTodos(todos)),
+  insertTodos: todos => dispatch(insertTodos(todos)),
+  getTodos: () => dispatch(getTodos()),
+  editTodos: payload => dispatch(editTodos(payload)),
+  deleteTodos: payload => dispatch(deleteTodos(payload)),
+});
 
-const mapStateToProps = state => {
-  return { todoStore: state };
-};
+
+const mapStateToProps = state => ( { todoStore: state } );
 
 TodoInput.propTypes = {
   todos: PropTypes.array.isRequired,
 }
-
 
 export default connect(
   mapStateToProps,
